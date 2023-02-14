@@ -1,6 +1,8 @@
 # Created by emreisik at 2/14/23
-Feature: # Enter feature name here
-  # Enter feature description here
+Feature: Sign in is visible.
 
-  Scenario: # Enter scenario name here
-    # Enter steps here
+
+  Scenario: Sign in test case..
+    Given Get amazon page
+    When Check the orders&returns
+    Then Verify Sign in text shown

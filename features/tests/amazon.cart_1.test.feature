@@ -1,6 +1,7 @@
 # Created by emreisik at 2/14/23
-Feature: # Enter feature name here
-  # Enter feature description here
+Feature: Amazon cart check
 
-  Scenario: # Enter scenario name here
-    # Enter steps here
+  Scenario: Amazon cart empty
+    Given Start amazon.com
+    When Click on cart button
+    Then Verify that cart is empty
