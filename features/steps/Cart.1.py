@@ -19,9 +19,9 @@ def click_saerch(context):
     context.driver.find_element(By.CSS_SELECTOR, "#nav-search-submit-button").click()
 
 
-@when('Add item into cart')
-def choosing_item(context):
-    context.driver.find_element(By.CSS_SELECTOR, "div._bGlmZ_badgeItemImage_2uh-g").click()
+# @when('Add item into cart')
+# def choosing_item(context):
+#     context.driver.find_element(By.CSS_SELECTOR, "div._bGlmZ_badgeItemImage_2uh-g").click()
 
 
 @then('Check the item')
