@@ -1,6 +1,12 @@
+import io
+import urllib.request
+
 from selenium.webdriver.common.by import By
 from behave import given, when, then
 from time import sleep
+from selenium.webdriver.support import expected_conditions as EC
+
+
 
 AMAZON_SEARCH_FIELD = (By.ID, 'twotabsearchtextbox')
 SEARCH_ICON = (By.ID, 'nav-search-submit-button')
@@ -9,12 +15,22 @@ FOOTER_LINKS = (By.CSS_SELECTOR, "table.navFooterMoreOnAmazon td.navFooterDescIt
 HEADER_LINKS = (By.CSS_SELECTOR, '#nav-xshop a.nav-a')
 BESTSELLERS_BUTTON = (By.CSS_SELECTOR, "a[data-csa-c-content-id='nav_cs_bestsellers']")
 BESTSELLERS_LINK = (By.CSS_SELECTOR, "div._p13n-zg-nav-tab-all_style_zg-tabs__EYPLq  div._p13n-zg-nav-tab-all_style_zg-tabs-li-div__1YdPR")
+COLOR_OPTIONS = (By.CSS_SELECTOR, "#variation_color_name img")
+CURRENT_COLOR = (By.CSS_SELECTOR, ".selection")
+MUG_IMG = (By.CSS_SELECTOR, ".s-image")
+MUG_PRODUCT_NAME = (By.CSS_SELECTOR, "img[data-image-latency='s-product-image']")
+
+
+@given('Open amazon Product page')
+def jean_colors(context):
+    context.driver.get('https://www.amazon.com/gp/product/B07BJKRR25/')
+    context.driver.implicitly_wait(4)
 
 
 @given('Open Amazon page')
 def open_amazon(context):
     context.driver.get('https://www.amazon.com/')
-    sleep(2)
+    context.driver.implicitly_wait(5)
 
 
 @when('Input text {search_word}')
@@ -27,6 +43,36 @@ def click_search_button(context):
     context.driver.find_element(*SEARCH_ICON).click()
 
 
+@then('Verify user can click on all the colors')
+def jean_colors(context):
+    context.driver.find_element(*COLOR_OPTIONS).click()
+    all_jean_color = context.driver.find_elements(*COLOR_OPTIONS)
+    print('All jean colors:', all_jean_color)
+
+    for jeans in all_jean_color:
+        jeans.click()
+        current_jean_color = context.driver.find_element(*CURRENT_COLOR).text
+        print('Current color:',current_jean_color)
+
+
+@then('Verify that all the mug images visible')
+def visibility_of_mugs(context):
+    context.driver.find_elements(*MUG_IMG)
+    element_img = context.driver.find_elements(*MUG_IMG)
+    expected_result = len(element_img)
+    assert len(element_img) == expected_result, f'expected{MUG_IMG}but got {len(element_img)}'
+    print('Images:', len(element_img))
+    print('All images present')
+
+
+@then('Verify product names are present')
+def product_names(context):
+    context.driver.find_elements(*MUG_PRODUCT_NAME)
+    all_mug_names = context.driver.find_elements(*MUG_PRODUCT_NAME)
+    print('Product names:', len(all_mug_names))
+    print('All stable product has a name')
+
+
 @then('Click on bestsellers button')
 def bestsellers_button(context):
     context.driver.find_element(*BESTSELLERS_BUTTON).click()
@@ -36,7 +82,7 @@ def bestsellers_button(context):
 def hamburger_menu(context):
     #print('\n find element:')
     element = context.driver.find_element(*HAMBURGER_MENU)
-    #print(element)
+    print(element)
 
 
 @then('Verify that footer has {expected_amount_of_links} links')
