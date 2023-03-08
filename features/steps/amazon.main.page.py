@@ -1,12 +1,9 @@
-import io
-import urllib.request
-
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from behave import given, when, then
+from selenium import webdriver
 from time import sleep
 from selenium.webdriver.support import expected_conditions as EC
-
-
 
 AMAZON_SEARCH_FIELD = (By.ID, 'twotabsearchtextbox')
 SEARCH_ICON = (By.ID, 'nav-search-submit-button')
@@ -15,18 +12,23 @@ FOOTER_LINKS = (By.CSS_SELECTOR, "table.navFooterMoreOnAmazon td.navFooterDescIt
 HEADER_LINKS = (By.CSS_SELECTOR, '#nav-xshop a.nav-a')
 BESTSELLERS_BUTTON = (By.CSS_SELECTOR, "a[data-csa-c-content-id='nav_cs_bestsellers']")
 BESTSELLERS_LINK = (By.CSS_SELECTOR, "div._p13n-zg-nav-tab-all_style_zg-tabs__EYPLq  div._p13n-zg-nav-tab-all_style_zg-tabs-li-div__1YdPR")
-COLOR_OPTIONS = (By.CSS_SELECTOR, "#variation_color_name img")
+COLOR_OPTIONS = (By.CSS_SELECTOR, ".imgSwatch")
 CURRENT_COLOR = (By.CSS_SELECTOR, ".selection")
 MUG_IMG = (By.CSS_SELECTOR, ".s-image")
 MUG_PRODUCT_NAME = (By.CSS_SELECTOR, "img[data-image-latency='s-product-image']")
+BEST_SELLER_ROOT=(By.CSS_SELECTOR, "div[class*='_p13n-zg-nav-tab-all_style_zg-tabs-li-]")
+LOCATORR=(By.CSS_SELECTOR,"#zg_banner_text")
 
 
 @given('Open amazon Product page')
 def jean_colors(context):
-    context.driver.get('https://www.amazon.com/gp/product/B07BJKRR25/')
+    context.driver.get('https://www.amazon.com/Dickies-Mens-Original-Work-Black/dp/B000N8PZ8G/')
     context.driver.implicitly_wait(4)
 
 
+@given('Open Amazon bestseller page')
+def open_bestseller(context):
+    context.driver.get('https://www.amazon.com/gp/bestsellers/?ref_=nav_cs_bestsellers')
 @given('Open Amazon page')
 def open_amazon(context):
     context.driver.get('https://www.amazon.com/')
@@ -43,16 +45,28 @@ def click_search_button(context):
     context.driver.find_element(*SEARCH_ICON).click()
 
 
+@then('Verify user can click on all best seller links')
+def best_seller_links(context):
+    first_link = context.driver.find_elements(*BEST_SELLER_ROOT)
+    print(first_link)
+
+    for a in range(len(first_link)):
+        to_click = context.driver.find_elements(*BEST_SELLER_ROOT)[a]
+        link_text = to_click.text
+        to_click.click()
+        header_text=context.driver.find_element(*LOCATORR).text
+        assert link_text in header_text,f'expected{link_text} in {header_text}'
+
+
 @then('Verify user can click on all the colors')
 def jean_colors(context):
     context.driver.find_element(*COLOR_OPTIONS).click()
     all_jean_color = context.driver.find_elements(*COLOR_OPTIONS)
     print('All jean colors:', all_jean_color)
-
     for jeans in all_jean_color:
         jeans.click()
         current_jean_color = context.driver.find_element(*CURRENT_COLOR).text
-        print('Current color:',current_jean_color)
+        print('Current color:', current_jean_color)
 
 
 @then('Verify that all the mug images visible')
@@ -71,6 +85,12 @@ def product_names(context):
     all_mug_names = context.driver.find_elements(*MUG_PRODUCT_NAME)
     print('Product names:', len(all_mug_names))
     print('All stable product has a name')
+
+    #for product in all_products:
+    #print(product)
+    #assert product.find_element(*mug_image).is_displayed(), 'product image is missing'
+    #print(product.find_element(*mug_product_name).text)
+    #assert product.find_element(*mug_product_name).text, 'product name is missng'
 
 
 @then('Click on bestsellers button')

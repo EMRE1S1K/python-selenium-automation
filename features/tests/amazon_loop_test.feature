@@ -13,3 +13,14 @@ Feature: Open amazon product Amazon Essentials Men's Slim-Fit Stretch Jean
     Then Verify that all the mug images visible
     Then Verify product names are present
 
+  Scenario: Verify each top link opens correct page
+    Given Open Amazon bestseller page
+    Then Verify user can click on all best seller links
+
+  Scenario: User can open and close Amazon Privacy Notice
+    Given Open Amazon T&C page
+    When Store original windows
+    And Click on Amazon Privacy Notice link
+    And Switch to the newly opened window
+    Then Verify Amazon Privacy Notice page is opened
+    And User can close new window and switch back to original
