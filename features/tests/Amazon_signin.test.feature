@@ -3,6 +3,6 @@ Feature: Sign in is visible.
 
 
   Scenario: Sign in test case..
-    Given Get amazon page
-    When Check the orders&returns
+    Given Open Amazon page
+    When Click on Amazon orders
     Then Verify Sign in text shown

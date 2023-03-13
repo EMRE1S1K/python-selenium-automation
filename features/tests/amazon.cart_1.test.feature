@@ -2,6 +2,6 @@
 Feature: Amazon cart check
 
   Scenario: Amazon cart empty
-    Given Start amazon.com
+    Given Open Amazon page
     When Click on cart button
-    Then Verify that cart is empty
+    Then Empty Your Amazon Cart is empty text shown

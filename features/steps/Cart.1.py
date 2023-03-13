@@ -2,43 +2,39 @@ from selenium.webdriver.common.by import By
 from behave import given, when, then
 from time import sleep
 
+ITEM_LOCATOR = (By.CSS_SELECTOR, "div._bGlmZ_badgeItemImage_2uh-g")
+FIRST_MOVE = (By.CSS_SELECTOR, "i.a-icon.a-accordion-radio.a-icon-radio-inactive")
+SECOND_MOVE = (By.CSS_SELECTOR, "#add-to-cart-button")
+VERIFY_ITEM = (By.CSS_SELECTOR, ".a-section.a-padding-medium.sw-atc-message-section")
 
-@given('Launch amazon')
-def open_amazon(context):
-    context.driver.get('https://www.amazon.com/')
-    sleep(1)
 
-
-@when('Search for espresso cream drink')
-def product_search(context):
-    context.driver.find_element(By.CSS_SELECTOR, "#twotabsearchtextbox").send_keys('Espresso cream coffee')
+@when('Search for {any_item}')
+def product_search(context, any_item):
+    context.app.header.input_search_text(any_item)
 
 
 @then('search button')
-def click_saerch(context):
-    context.driver.find_element(By.CSS_SELECTOR, "#nav-search-submit-button").click()
+def click_search(context):
+    context.app.header.click_search()
 
 
-# @when('Add item into cart')
-# def choosing_item(context):
-#     context.driver.find_element(By.CSS_SELECTOR, "div._bGlmZ_badgeItemImage_2uh-g").click()
+@when('Select an item')
+def choosing_item(context):
+    context.app.header.item_selection()
 
 
-@then('Check the item')
+@then('Move item into cart')
 def mov_to_cart(context):
-    context.driver.find_element(By.CSS_SELECTOR, "#newAccordionRow > div > div.a-accordion-row-a11y.a-accordion-row.a-declarative.accordion-header.mobb-header-css").click()
+    context.app.header.moving_item_first()
     sleep(1)
 
 
 @then('click again')
 def mov_to_cart2(context):
-    context.driver.find_element(By.CSS_SELECTOR, "#add-to-cart-button").click()
+    context.app.header.moving_tem_second()
     sleep(1)
 
 
-@then('Check if item visible')
-def visible_item(context):
-    expected_result = context.driver.find_element(By.CSS_SELECTOR, "input[data-feature-id='proceed-to-checkout-action']")
-    actual_result = context.driver.find_element(By.CSS_SELECTOR, "input[data-feature-id='proceed-to-checkout-action']")
-    assert expected_result == actual_result, f'Error! Expected {expected_result}, but got {actual_result}'
-    print('Test case succesfull')
+@then('Check if {expected_text} text shown')
+def visible_item(context,expected_text):
+    context.app.search_results_page.item_in_cart(expected_text)
