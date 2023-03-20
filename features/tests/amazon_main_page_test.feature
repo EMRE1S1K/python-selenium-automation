@@ -9,3 +9,13 @@ Feature: Amazon main page test
     Given Open Amazon page
     Then Verify that footer has 42 links
     Then Verify that header has 29 links
+
+  Scenario: Hover Over
+    Given Open Amazon page
+    When Hover over on language option
+    Then Verify user can see Language section
+
+  Scenario: Hover Over NEW
+    Given Open new arrivals
+    When Hover over on new arrivals option
+    Then Verify user can see new deals

@@ -16,33 +16,59 @@ COLOR_OPTIONS = (By.CSS_SELECTOR, ".imgSwatch")
 CURRENT_COLOR = (By.CSS_SELECTOR, ".selection")
 MUG_IMG = (By.CSS_SELECTOR, ".s-image")
 MUG_PRODUCT_NAME = (By.CSS_SELECTOR, "img[data-image-latency='s-product-image']")
-BEST_SELLER_ROOT=(By.CSS_SELECTOR, "div[class*='_p13n-zg-nav-tab-all_style_zg-tabs-li-]")
-LOCATORR=(By.CSS_SELECTOR,"#zg_banner_text")
+BEST_SELLER_ROOT=(By.CSS_SELECTOR, "#zg_header a")
+LOCATORR=(By.CSS_SELECTOR, "#zg_banner_text")
 
 
 @given('Open amazon Product page')
 def jean_colors(context):
     context.driver.get('https://www.amazon.com/Dickies-Mens-Original-Work-Black/dp/B000N8PZ8G/')
-    context.driver.implicitly_wait(4)
+    context.driver.implicitly_wait(5)
 
 
 @given('Open Amazon bestseller page')
 def open_bestseller(context):
-    context.driver.get('https://www.amazon.com/gp/bestsellers/?ref_=nav_cs_bestsellers')
+    #context.driver.get('https://www.amazon.com/gp/bestsellers/?ref_=nav_cs_bestsellers')
+    context.app.main_page.best_seller()
 @given('Open Amazon page')
 def open_amazon(context):
-    context.driver.get('https://www.amazon.com/')
+    #context.driver.get('https://www.amazon.com/')
+    context.app.main_page.open_main()
+    context.driver.implicitly_wait(5)
+
+@given('open new arrivals')
+def open_new_arrivals(context):
+    context.app.main_page.new_arrivals()
     context.driver.implicitly_wait(5)
 
 
-@when('Input text {search_word}')
-def input_search_word(context, search_word):
-    context.driver.find_element(*AMAZON_SEARCH_FIELD).send_keys(search_word)
+@when('Input text {text}')
+def input_search_word(context, text):
+    # context.driver.find_element(*AMAZON_SEARCH_FIELD).send_keys(search_word)
+    context.app.header.input_search_text(text)
 
 
 @when('Click on search button')
 def click_search_button(context):
-    context.driver.find_element(*SEARCH_ICON).click()
+    # context.driver.find_element(*SEARCH_ICON).click()
+    context.app.header.click_search()
+
+
+@when('Hover over on language option')
+def hover_language_options(context):
+    context.app.header.hover_language_options()
+
+@when('Hover over on new arrivals option')
+def hover_new_arrivals(context):
+    context.app.header
+
+
+
+@when('Select department by alias {alias}')
+def select_department(context, alias):
+    context.app.header.select_department(alias)
+
+
 
 
 @then('Verify user can click on all best seller links')
@@ -53,8 +79,10 @@ def best_seller_links(context):
     for a in range(len(first_link)):
         to_click = context.driver.find_elements(*BEST_SELLER_ROOT)[a]
         link_text = to_click.text
+        print(link_text)
         to_click.click()
-        header_text=context.driver.find_element(*LOCATORR).text
+        header_text = context.driver.find_element(*LOCATORR).text
+        print(header_text)
         assert link_text in header_text,f'expected{link_text} in {header_text}'
 
 
@@ -127,3 +155,13 @@ def verify_header_link_count(context, expected_amount_of_links):
     Bestsellers_links = context.driver.find_elements(*BESTSELLERS_LINK)
     print('\n Link count :', len(Bestsellers_links))
     assert len(Bestsellers_links) == expected_amount_of_links, f'expected {expected_amount_of_links} links but got {len(Bestsellers_links)}'
+
+
+@then('Verify user can see Language section')
+def verify_language_option_shown(context):
+    context.app.header.verify_language_shown()
+
+
+@then('Verify user can see new deals')
+def verify_new_arrivals_shown(context):
+    context.app.header.new_arrivals_shown()

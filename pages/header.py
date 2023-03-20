@@ -1,7 +1,8 @@
 from selenium.webdriver.common.by import By
 from pages.base_page import Page
 from selenium.webdriver.support import expected_conditions as EC
-
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import Select
 
 class Header(Page):
     AMAZON_SEARCH_FIELD = (By.ID, 'twotabsearchtextbox')
@@ -12,7 +13,11 @@ class Header(Page):
     ITEM_LOCATOR = (By.CSS_SELECTOR, "div._bGlmZ_badgeItemImage_2uh-g")
     FIRST_MOVE = (By.CSS_SELECTOR, "i.a-icon.a-accordion-radio.a-icon-radio-inactive")
     SECOND_MOVE = (By.CSS_SELECTOR, "#add-to-cart-button")
-
+    LANGUAGE_OPTIONS =(By.ID, 'icp-nav-flyout')
+    LANGUAGE = (By.CSS_SELECTOR, "a[href='#switch-lang=es_US']")
+    DEPARTMENT_DROPDOWN = (By.ID, 'searchDropdownBox')
+    NEW_ARRIVALS = (By.CSS_SELECTOR, "a[aria-label='New Arrivals'] span.nav-a-content")
+    NEW_DEALS = (By.CSS_SELECTOR, ".mm-merch-panel h3")
 
     def input_search_text(self, text):
         self.input_text(text, *self.AMAZON_SEARCH_FIELD)
@@ -38,3 +43,26 @@ class Header(Page):
 
     def moving_tem_second(self):
         self.click(*self.SECOND_MOVE)
+
+    def hover_language_options(self):
+        language_options = self.find_element(*self.LANGUAGE_OPTIONS)
+        actions = ActionChains(self.driver)
+        actions.move_to_element(language_options)
+        actions.perform()
+
+    def verify_language_shown(self):
+        self.wait_for_element_appear(*self.LANGUAGE)
+
+    def hover_new_arrivals(self):
+        new_arrivals = self.find_element(*self.NEW_ARRIVALS)
+        actions = ActionChains(self.driver)
+        actions.move_to_element(new_arrivals)
+        actions.perform()
+
+    def new_arrivals_shown(self):
+        self.wait_for_element_appear(*self.NEW_DEALS)
+
+    def select_department(self, alias):
+        department_dropdown = self.find_element(*self.DEPARTMENT_DROPDOWN)
+        select = Select(department_dropdown)
+        select.select_by_value(f'search-alias={alias}')
