@@ -60,7 +60,7 @@ def hover_language_options(context):
 
 @when('Hover over on new arrivals option')
 def hover_new_arrivals(context):
-    context.app.header
+    context.app.header.new_arrivals_shown()
 
 
 
